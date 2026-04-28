@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/css/global.css" />
+    <link rel="stylesheet" href="/static/css/chat.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <main class="chat-interface">
+      <div class="message-list">
+        <!-- {% for msg in message_history %}
+          <div class="message-bubble {{ 'left' if msg.origin == 'user' else 'right' }}">
+            <span class="message-author">{{ msg.author }}</span>
+            <p class="message">{{ msg.text }}</p>
+            <span class="message-time">{{ msg.timestamp }}</span>
+          </div>
+        {% endfor %} -->
+      </div>
+
+      <form method="post" action="/chat" class="chat-input-area">
+        <textarea
+          id="message"
+          name="message"
+          class="chat-input"
+          placeholder="Digite sua mensagem aqui..."
+        ></textarea>
+
+        <div class="actions">
+          <a href="/clients" class="btn-link">
+            <button type="button" id="clients-button">Cadastro</button>
+          </a>
+          <a href="/logout" class="btn-link">
+            <button type="button" id="restart-button">Restart</button>
+          </a>
+          <button type="submit" id="submit-button" class="submit-button">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 19V5M5 12l7-7 7 7"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </form>
+    </main>
+    <script type="module" src="/static/js/pages/chatbot.js"></script>
+  </body>
+</html>

@@ -1,23 +1,62 @@
 import sqlite3
-
-# Configurando conexões iniciais
-connection = sqlite3.connect("chatbot-database.db")
-cursor = connection.cursor()
+from pathlib import Path
 
 
-# Inicialização de tabelas
+DB_PATH = Path(__file__).resolve().parents[1] / "chatbot-database.db"
 
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS clientes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        cpf TEXT NOT NULL UNIQUE,
-        numero_cartao TEXT NOT NULL,
-        limite_total REAL NOT NULL,
-        limite_disponivel REAL NOT NULL,
-        fatura_atual REAL NOT NULL,
-        vencimento_cartao TEXT NOT NULL,
-        vencimento_fatura TEXT NOT NULL,
-        status_cartao TEXT NOT NULL
-    )
-""")
+
+def get_connection() -> sqlite3.Connection:
+    connection = sqlite3.connect(DB_PATH)
+    connection.row_factory = sqlite3.Row
+    return connection
+
+
+def init_db() -> None:
+    with get_connection() as connection:
+        cursor = connection.cursor()
+
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                document TEXT NOT NULL UNIQUE,
+                email TEXT NOT NULL,
+                admin INTEGER NOT NULL DEFAULT 0,
+                card_number TEXT NOT NULL,
+                card_type TEXT NOT NULL,
+                card_status INTEGER NOT NULL,
+                credit_limit REAL NOT NULL,
+                available_limit REAL NOT NULL,
+                invoice_total REAL NOT NULL,
+                due_date TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+
+        cursor.execute("SELECT COUNT(1) AS total FROM users")
+        if cursor.fetchone()["total"] == 0:
+            cursor.execute(
+                """
+                INSERT INTO users (
+                    name, document, email, admin,
+                    card_number, card_type, card_status,
+                    credit_limit, available_limit, invoice_total, due_date
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    "Cliente Demo",
+                    "12345678901",
+                    "cliente@demo.com",
+                    1,
+                    "1234",
+                    "fisico",
+                    1,
+                    5000.0,
+                    4500.0,
+                    500.0,
+                    "2026-12-10",
+                ),
+            )
+            connection.commit()
