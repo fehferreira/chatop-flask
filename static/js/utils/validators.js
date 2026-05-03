@@ -54,7 +54,7 @@ export const validateClientForm = ({ name, document, email, card }) => {
     errors.push('Limite total deve ser maior que zero.');
   }
 
-  if (card.invoice_total === null || Number.isNaN(card.invoice_total)) {
+  if (card.invoice_total === undefined || card.invoice_total === '' || Number.isNaN(card.invoice_total)) {
     errors.push('Informe o valor da fatura.');
   } else if (card.invoice_total < 0) {
     errors.push('Valor da fatura não pode ser negativo.');

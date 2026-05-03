@@ -23,3 +23,13 @@ export const applyCurrencyMask = (value) => {
     maximumFractionDigits: 2,
   });
 };
+
+export const parseCurrencyMask = (value) => {
+  if (!value) return 0;
+  return parseFloat(value.replace(/\./g, '').replace(',', '.')) || 0;
+};
+
+export const toCurrencyMask = (value) => {
+  if (value == null || value === '') return '';
+  return applyCurrencyMask(String(Math.round(Number(value) * 100)));
+};

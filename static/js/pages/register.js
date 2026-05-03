@@ -1,4 +1,4 @@
-import { applyCpfMask, applyCardNumberMask } from '/static/js/utils/masks.js';
+import { applyCpfMask, applyCardNumberMask, applyCurrencyMask, parseCurrencyMask, toCurrencyMask } from '/static/js/utils/masks.js';
 import { validateClientForm } from '/static/js/utils/validators.js';
 
 const clientsData = document.getElementById('clients-data');
@@ -21,22 +21,6 @@ const dueDateInput = document.getElementById('dueDate');
 
 const getCardDigits = (value) => {
 	return value.replace(/\D/g, '').slice(0, 16);
-};
-
-const toNumber = (value) => {
-	if (value === null || value === undefined || value === '') {
-		return 0;
-	}
-
-	return Number(value);
-};
-
-const toNullableNumber = (value) => {
-	if (value === null || value === undefined || value === '') {
-		return null;
-	}
-
-	return Number(value);
 };
 
 const getOrCreateErrorToast = () => {
@@ -81,8 +65,8 @@ if (clientList) {
 		cardInput.value = applyCardNumberMask(client.card?.number || '');
 		cardType.value = client.card?.type || '';
 		cardStatus.value = String(client.card?.status ?? '');
-		creditLimitInput.value = client.card?.credit_limit ?? '';
-		invoiceTotalInput.value = client.card?.invoice_total ?? '';
+		creditLimitInput.value = toCurrencyMask(client.card?.credit_limit);
+		invoiceTotalInput.value = toCurrencyMask(client.card?.invoice_total);
 
 		dueDateInput.type = 'date';
 		dueDateInput.value = client.card?.due_date || '';
@@ -104,6 +88,18 @@ if (cardInput) {
 	});
 }
 
+if (creditLimitInput) {
+	creditLimitInput.addEventListener('input', () => {
+		creditLimitInput.value = applyCurrencyMask(creditLimitInput.value);
+	});
+}
+
+if (invoiceTotalInput) {
+	invoiceTotalInput.addEventListener('input', () => {
+		invoiceTotalInput.value = applyCurrencyMask(invoiceTotalInput.value);
+	});
+}
+
 if (form) {
 	form.noValidate = true;
 
@@ -119,8 +115,8 @@ if (form) {
 				number: getCardDigits(cardInput?.value || ''),
 				type: cardType?.value || '',
 				status: parsedCardStatus,
-				credit_limit: toNumber(creditLimitInput?.value),
-				invoice_total: toNullableNumber(invoiceTotalInput?.value),
+				credit_limit: parseCurrencyMask(creditLimitInput?.value),
+				invoice_total: parseCurrencyMask(invoiceTotalInput?.value),
 				due_date: dueDateInput?.value || '',
 			},
 		};
