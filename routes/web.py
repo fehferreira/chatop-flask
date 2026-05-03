@@ -26,7 +26,7 @@ def logout():
 @web_bp.get("/clients")
 def clients_page():
     users = sqlite_service.list_users()
-    return render_template("register_page.html", users=users, feedback=None, feedback_type=None)
+    return render_template("register.html", users=users, feedback=None, feedback_type=None)
 
 
 @web_bp.post("/clients")
@@ -43,7 +43,7 @@ def create_client():
         feedback_type = "error"
 
     users = sqlite_service.list_users()
-    return render_template("register_page.html", users=users, feedback=feedback, feedback_type=feedback_type)
+    return render_template("register.html", users=users, feedback=feedback, feedback_type=feedback_type)
 
 
 @web_bp.post("/clients/<int:user_id>/edit")
@@ -64,7 +64,7 @@ def edit_client(user_id: int):
         feedback_type = "error"
 
     users = sqlite_service.list_users()
-    return render_template("register_page.html", users=users, feedback=feedback, feedback_type=feedback_type)
+    return render_template("register.html", users=users, feedback=feedback, feedback_type=feedback_type)
 
 
 @web_bp.post("/clients/<int:user_id>/delete")
