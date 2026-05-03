@@ -1,4 +1,5 @@
 import { applyCpfMask, applyCardNumberMask } from '/static/js/utils/masks.js';
+import { validateClientForm } from '/static/js/utils/validators.js';
 
 const clientsData = document.getElementById('clients-data');
 const clients = JSON.parse(clientsData?.textContent || '[]');
@@ -15,9 +16,53 @@ const adminInput = document.getElementById('admin');
 const cardType = document.getElementById('cardType');
 const cardStatus = document.getElementById('cardStatus');
 const creditLimitInput = document.getElementById('creditLimit');
-const availableLimitInput = document.getElementById('availableLimit');
 const invoiceTotalInput = document.getElementById('invoiceTotal');
 const dueDateInput = document.getElementById('dueDate');
+
+const getCardDigits = (value) => {
+	return value.replace(/\D/g, '').slice(0, 16);
+};
+
+const toNumber = (value) => {
+	if (value === null || value === undefined || value === '') {
+		return 0;
+	}
+
+	return Number(value);
+};
+
+const toNullableNumber = (value) => {
+	if (value === null || value === undefined || value === '') {
+		return null;
+	}
+
+	return Number(value);
+};
+
+const getOrCreateErrorToast = () => {
+	let toast = document.getElementById('form-error');
+
+	if (!toast) {
+		toast = document.createElement('div');
+		toast.id = 'form-error';
+		document.body.appendChild(toast);
+	}
+
+	toast.className = 'toast toast--error';
+	return toast;
+};
+
+const showFormErrors = (errors) => {
+	const toast = getOrCreateErrorToast();
+	toast.textContent = errors.map(e => `- ${e}`).join('\n');
+};
+
+const clearFormErrors = () => {
+	const toast = document.getElementById('form-error');
+	if (!toast) return;
+
+	toast.remove();
+};
 
 if (clientList) {
 	clientList.addEventListener('click', (event) => {
@@ -33,11 +78,10 @@ if (clientList) {
 		emailInput.value = client.email || '';
 		adminInput.checked = Boolean(client.admin);
 
-		cardInput.value = client.card?.number || '';
+		cardInput.value = applyCardNumberMask(client.card?.number || '');
 		cardType.value = client.card?.type || '';
 		cardStatus.value = String(client.card?.status ?? '');
 		creditLimitInput.value = client.card?.credit_limit ?? '';
-		availableLimitInput.value = client.card?.available_limit ?? '';
 		invoiceTotalInput.value = client.card?.invoice_total ?? '';
 
 		dueDateInput.type = 'date';
@@ -57,5 +101,38 @@ if (documentInput) {
 if (cardInput) {
 	cardInput.addEventListener('input', () => {
 		cardInput.value = applyCardNumberMask(cardInput.value);
+	});
+}
+
+if (form) {
+	form.noValidate = true;
+
+	form.addEventListener('submit', (event) => {
+		const cardStatusValue = cardStatus?.value;
+		const parsedCardStatus = cardStatusValue === '' ? null : Number(cardStatusValue);
+
+		const payload = {
+			name: nameInput?.value || '',
+			document: documentInput?.value || '',
+			email: emailInput?.value || '',
+			card: {
+				number: getCardDigits(cardInput?.value || ''),
+				type: cardType?.value || '',
+				status: parsedCardStatus,
+				credit_limit: toNumber(creditLimitInput?.value),
+				invoice_total: toNullableNumber(invoiceTotalInput?.value),
+				due_date: dueDateInput?.value || '',
+			},
+		};
+
+		const errors = validateClientForm(payload);
+
+		if (errors.length > 0) {
+			event.preventDefault();
+			showFormErrors(errors);
+			return;
+		}
+
+		clearFormErrors();
 	});
 }

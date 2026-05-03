@@ -24,6 +24,7 @@ export const validateOnboardingCredentials = ({ document, email }) => {
 
 export const validateClientForm = ({ name, document, email, card }) => {
   const errors = [];
+  const cardDigits = (card.number || '').replace(/\D/g, '');
 
   if (!name || name.trim().length < 3) {
     errors.push('Nome deve ter no mínimo 3 caracteres.');
@@ -37,8 +38,8 @@ export const validateClientForm = ({ name, document, email, card }) => {
     errors.push('E-mail inválido.');
   }
 
-  if (!card.number || !/^\d{4}$/.test(card.number)) {
-    errors.push('Final do cartão deve ter exatamente 4 dígitos.');
+  if (!/^\d{16}$/.test(cardDigits)) {
+    errors.push('Número do cartão deve ter 16 dígitos.');
   }
 
   if (!card.type) {
@@ -53,12 +54,12 @@ export const validateClientForm = ({ name, document, email, card }) => {
     errors.push('Limite total deve ser maior que zero.');
   }
 
-  if (card.available_limit < 0 || card.available_limit > card.credit_limit) {
-    errors.push('Limite disponível inválido.');
-  }
-
-  if (card.invoice_total < 0) {
+  if (card.invoice_total === null || Number.isNaN(card.invoice_total)) {
+    errors.push('Informe o valor da fatura.');
+  } else if (card.invoice_total < 0) {
     errors.push('Valor da fatura não pode ser negativo.');
+  } else if (card.invoice_total > card.credit_limit) {
+    errors.push('Valor da fatura não pode ser maior que o limite total.');
   }
 
   if (!card.due_date) {

@@ -27,7 +27,6 @@ def init_db() -> None:
                 card_type TEXT NOT NULL,
                 card_status INTEGER NOT NULL,
                 credit_limit REAL NOT NULL,
-                available_limit REAL NOT NULL,
                 invoice_total REAL NOT NULL,
                 due_date TEXT NOT NULL,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP
@@ -42,8 +41,8 @@ def init_db() -> None:
                 INSERT INTO users (
                     name, document, email, admin,
                     card_number, card_type, card_status,
-                    credit_limit, available_limit, invoice_total, due_date
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    credit_limit, invoice_total, due_date
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     "Cliente Demo",
@@ -54,7 +53,6 @@ def init_db() -> None:
                     "fisico",
                     1,
                     5000.0,
-                    4500.0,
                     500.0,
                     "2026-12-10",
                 ),

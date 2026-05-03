@@ -17,7 +17,6 @@ class SQLiteService:
 				"type": row["card_type"],
 				"status": row["card_status"],
 				"credit_limit": row["credit_limit"],
-				"available_limit": row["available_limit"],
 				"invoice_total": row["invoice_total"],
 				"due_date": row["due_date"],
 			},
@@ -45,6 +44,9 @@ class SQLiteService:
 		with get_connection() as connection:
 			admin = 1 if payload.get("admin") in (1, True, "1", "true", "True", "on") else 0
 			normalized_document = re.sub(r"\D", "", payload["document"])
+			card_status = int(payload.get("card_status", 0))
+			credit_limit = float(payload.get("credit_limit", 0))
+			invoice_total = float(payload.get("invoice_total", 0))
 
 			cursor = connection.cursor()
 			cursor.execute(
@@ -52,8 +54,8 @@ class SQLiteService:
 				INSERT INTO users (
 					name, document, email, admin,
 					card_number, card_type, card_status,
-					credit_limit, available_limit, invoice_total, due_date
-				) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					credit_limit, invoice_total, due_date
+				) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 				""",
 				(
 					payload["name"],
@@ -62,10 +64,9 @@ class SQLiteService:
 					admin,
 					payload["card_number"],
 					payload["card_type"],
-					payload["card_status"],
-					payload["credit_limit"],
-					payload["available_limit"],
-					payload["invoice_total"],
+					card_status,
+					credit_limit,
+					invoice_total,
 					payload["due_date"],
 				),
 			)
@@ -76,6 +77,9 @@ class SQLiteService:
 		with get_connection() as connection:
 			admin = 1 if payload.get("admin") in (1, True, "1", "true", "True", "on") else 0
 			normalized_document = re.sub(r"\D", "", payload["document"])
+			card_status = int(payload.get("card_status", 0))
+			credit_limit = float(payload.get("credit_limit", 0))
+			invoice_total = float(payload.get("invoice_total", 0))
 
 			cursor = connection.cursor()
 			cursor.execute(
@@ -90,7 +94,6 @@ class SQLiteService:
 					card_type = ?,
 					card_status = ?,
 					credit_limit = ?,
-					available_limit = ?,
 					invoice_total = ?,
 					due_date = ?
 				WHERE id = ?
@@ -102,10 +105,9 @@ class SQLiteService:
 					admin,
 					payload["card_number"],
 					payload["card_type"],
-					payload["card_status"],
-					payload["credit_limit"],
-					payload["available_limit"],
-					payload["invoice_total"],
+					card_status,
+					credit_limit,
+					invoice_total,
 					payload["due_date"],
 					user_id,
 				),

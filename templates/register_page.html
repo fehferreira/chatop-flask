@@ -46,7 +46,6 @@
               <option value="0">Bloqueado</option>
             </select>
             <input type="number" placeholder="Limite total" id="creditLimit" name="credit_limit" class="register-input" />
-            <input type="number" placeholder="Limite disponível" id="availableLimit" name="available_limit" class="register-input" />
             <input type="number" placeholder="Valor da fatura" id="invoiceTotal" name="invoice_total" class="register-input" />
             <input type="text" placeholder="Data de vencimento" id="dueDate" name="due_date" class="register-input"
               onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" />
@@ -109,10 +108,6 @@
                 <div class="register-finance-item">
                   <span class="register-finance-label">Limite</span>
                   <strong class="register-finance-value">{{ "R$ {:,.2f}".format(client.card.credit_limit).replace(",", "X").replace(".", ",").replace("X", ".") if client.card else '—' }}</strong>
-                </div>
-                <div class="register-finance-item">
-                  <span class="register-finance-label">Disponível</span>
-                  <strong class="register-finance-value">{{ "R$ {:,.2f}".format(client.card.available_limit).replace(",", "X").replace(".", ",").replace("X", ".") if client.card else '—' }}</strong>
                 </div>
                 <div class="register-finance-item register-finance-item-full">
                   <span class="register-finance-label">Fatura</span>
