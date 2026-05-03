@@ -396,10 +396,6 @@ select.register-input:focus-visible {
   background: var(--color-surface-secondary);
 }
 
-.register-finance-item-full {
-  grid-column: 1 / -1;
-}
-
 .register-finance-value {
   font-size: 14px;
   font-weight: 600;
@@ -451,9 +447,5 @@ select.register-input:focus-visible {
 
   .register-card-finance {
     grid-template-columns: 1fr;
-  }
-
-  .register-finance-item-full {
-    grid-column: auto;
   }
 }

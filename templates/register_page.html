@@ -109,7 +109,7 @@
                   <span class="register-finance-label">Limite</span>
                   <strong class="register-finance-value">{{ "R$ {:,.2f}".format(client.card.credit_limit).replace(",", "X").replace(".", ",").replace("X", ".") if client.card else '—' }}</strong>
                 </div>
-                <div class="register-finance-item register-finance-item-full">
+                <div class="register-finance-item">
                   <span class="register-finance-label">Fatura</span>
                   <strong class="register-finance-value">{{ "R$ {:,.2f}".format(client.card.invoice_total).replace(",", "X").replace(".", ",").replace("X", ".") if client.card else '—' }}</strong>
                 </div>
