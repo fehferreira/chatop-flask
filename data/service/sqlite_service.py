@@ -5,6 +5,27 @@ from config.connection import get_connection
 
 class SQLiteService:
 	@staticmethod
+	def _to_float(value):
+		if value is None:
+			return 0.0
+
+		if isinstance(value, (int, float)):
+			return float(value)
+
+		text = str(value).strip()
+		if text == "":
+			return 0.0
+
+		# Accept both Brazilian (5.000,00) and standard (5000.00) formats.
+		text = re.sub(r"[^\d,.-]", "", text)
+		if "," in text and "." in text:
+			text = text.replace(".", "").replace(",", ".")
+		elif "," in text:
+			text = text.replace(",", ".")
+
+		return float(text)
+
+	@staticmethod
 	def _row_to_client(row):
 		return {
 			"id": row["id"],
@@ -45,8 +66,8 @@ class SQLiteService:
 			admin = 1 if payload.get("admin") in (1, True, "1", "true", "True", "on") else 0
 			normalized_document = re.sub(r"\D", "", payload["document"])
 			card_status = int(payload.get("card_status", 0))
-			credit_limit = float(payload.get("credit_limit", 0))
-			invoice_total = float(payload.get("invoice_total", 0))
+			credit_limit = self._to_float(payload.get("credit_limit", 0))
+			invoice_total = self._to_float(payload.get("invoice_total", 0))
 
 			cursor = connection.cursor()
 			cursor.execute(
@@ -78,8 +99,8 @@ class SQLiteService:
 			admin = 1 if payload.get("admin") in (1, True, "1", "true", "True", "on") else 0
 			normalized_document = re.sub(r"\D", "", payload["document"])
 			card_status = int(payload.get("card_status", 0))
-			credit_limit = float(payload.get("credit_limit", 0))
-			invoice_total = float(payload.get("invoice_total", 0))
+			credit_limit = self._to_float(payload.get("credit_limit", 0))
+			invoice_total = self._to_float(payload.get("invoice_total", 0))
 
 			cursor = connection.cursor()
 			cursor.execute(

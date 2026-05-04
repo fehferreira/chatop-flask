@@ -1,14 +1,32 @@
 import { applyCpfMask } from "/static/js/utils/masks.js";
 import { isValidCpf, isValidEmail } from "/static/js/utils/validators.js";
 
+const form = document.querySelector(".chat-input-area");
 const initialMessage = document.querySelector(".initial-message");
+const messageInput = document.getElementById("message");
 const inputEmail = document.getElementById("email");
 const inputDocument = document.getElementById("document");
 const fakeSubmitButton = document.getElementById("fake-submit-button");
 const submitButton = document.getElementById("submit-button");
 
+let isAuthenticated = false;
+
 submitButton.style.display = "none";
 inputEmail.style.display = "none";
+messageInput.style.display = "none";
+
+const showChatMode = (user) => {
+  isAuthenticated = true;
+  inputDocument.style.display = "none";
+  inputEmail.style.display = "none";
+  fakeSubmitButton.style.display = "none";
+  submitButton.style.display = "block";
+  messageInput.style.display = "block";
+
+  initialMessage.innerHTML = `Olá <b>${user.name}</b>, como podemos te ajudar hoje?`;
+
+  messageInput.focus();
+};
 
 inputEmail.addEventListener("input", () => {
   inputEmail.value = inputEmail.value.toLowerCase();
@@ -18,11 +36,16 @@ inputDocument.addEventListener("input", () => {
   inputDocument.value = applyCpfMask(inputDocument.value);
 });
 
-submitButton.closest("form").addEventListener("submit", async (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  if (isAuthenticated) {
+    return;
+  }
+
   if (!isValidEmail(inputEmail.value)) {
-    initialMessage.textContent = "E-mail inválido. Por favor, insira um e-mail válido.";
+    initialMessage.textContent =
+      "E-mail inválido. Por favor, insira um e-mail válido.";
     inputEmail.value = "";
     return;
   }
@@ -53,20 +76,22 @@ submitButton.closest("form").addEventListener("submit", async (e) => {
     return;
   }
 
-  window.location.href = "/chat";
+  showChatMode(data.user);
 });
 
 fakeSubmitButton.addEventListener("click", () => {
-  if(isValidCpf(inputDocument.value)) {
+  if (isValidCpf(inputDocument.value)) {
     initialMessage.textContent = "Por favor, agora nos informe o seu e-mail.";
-    
+
     inputDocument.style.display = "none";
     inputEmail.style.display = "block";
+    inputEmail.focus();
 
     fakeSubmitButton.style.display = "none";
     submitButton.style.display = "block";
   } else {
-    initialMessage.textContent = "CPF inválido. Por favor, insira um CPF válido.";
+    initialMessage.textContent =
+      "CPF inválido. Por favor, insira um CPF válido.";
     inputDocument.value = "";
   }
 });
