@@ -17,16 +17,25 @@
   <body>
     <main class="chat-interface">
       <div class="message-list">
-        <!-- {% for msg in message_history %}
-          <div class="message-bubble {{ 'left' if msg.origin == 'user' else 'right' }}">
+        {% for msg in message_history %}
+          <div
+            class="message-bubble {{ 'right' if msg.origin == 'user' else 'left' }}"
+            data-timestamp="{{ msg.timestamp }}"
+          >
             <span class="message-author">{{ msg.author }}</span>
             <p class="message">{{ msg.text }}</p>
-            <span class="message-time">{{ msg.timestamp }}</span>
+            <span class="message-time">{{ msg.timestamp[11:16] if msg.timestamp else '' }}</span>
           </div>
-        {% endfor %} -->
+        {% endfor %}
       </div>
 
-      <form method="post" action="/chat" class="chat-input-area">
+      <div class="chat-loading" aria-live="polite" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <form class="chat-input-area" id="chat-form">
         <textarea
           id="message"
           name="message"

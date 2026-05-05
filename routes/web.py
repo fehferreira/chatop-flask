@@ -1,7 +1,8 @@
 import sqlite3
 
-from flask import Blueprint, redirect, render_template, request, session
+from flask import Blueprint, jsonify, redirect, render_template, request, session
 from data.service.sqlite_service import sqlite_service
+from domain.use_case.chat_use_case import respond
 
 
 web_bp = Blueprint("web_bp", __name__)
@@ -14,7 +15,31 @@ def root_page():
 
 @web_bp.get("/chat")
 def chat_page():
-    return render_template("chatbot.html", message_history=[])
+    user = session.get("user")
+    if user is None:
+        return redirect("/")
+
+    history = sqlite_service.list_chat_messages(user["id"])
+    return render_template("chatbot.html", message_history=history)
+
+
+@web_bp.post("/chat")
+def chat_send():
+    user = session.get("user")
+    if user is None:
+        return jsonify({"error": "Usuário não autenticado."}), 401
+
+    data = request.get_json(force=True, silent=True)
+    message = (data.get("message") or "").strip() if data else ""
+
+    if not message:
+        return jsonify({"error": "Mensagem vazia."}), 400
+
+    sqlite_service.create_chat_message(user["id"], "user", "Você", message)
+    reply = respond(message)
+    bot_message = sqlite_service.create_chat_message(user["id"], "bot", "Chatbot", reply)
+
+    return jsonify({"reply": reply, "timestamp": bot_message["timestamp"]})
 
 
 @web_bp.get("/logout")
@@ -53,7 +78,7 @@ def edit_client(user_id: int):
     try:
         updated = sqlite_service.update_user(user_id, data)
         if not updated:
-            feedback = "Cliente nao encontrado."
+            feedback = "Cliente não encontrado."
             feedback_type = "error"
         else:
             feedback = "Cliente atualizado com sucesso."

@@ -7,6 +7,7 @@ from routes import auth_bp, web_bp
 def create_app() -> Flask:
 	app = Flask(__name__)
 	app.config["SECRET_KEY"] = "chatop-secret-key"
+	app.json.ensure_ascii = False
 
 	init_db()
 

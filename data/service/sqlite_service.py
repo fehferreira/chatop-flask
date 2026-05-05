@@ -43,6 +43,17 @@ class SQLiteService:
 			},
 		}
 
+	@staticmethod
+	def _row_to_chat_message(row):
+		return {
+			"id": row["id"],
+			"user_id": row["user_id"],
+			"origin": row["origin"],
+			"author": row["author"],
+			"text": row["text"],
+			"timestamp": row["created_at"],
+		}
+
 	def list_users(self):
 		with get_connection() as connection:
 			rows = connection.execute("SELECT * FROM users ORDER BY id DESC").fetchall()
@@ -60,6 +71,43 @@ class SQLiteService:
 			return None
 
 		return self._row_to_client(row)
+
+	def list_chat_messages(self, user_id):
+		with get_connection() as connection:
+			rows = connection.execute(
+				"""
+				SELECT id, user_id, origin, author, text, datetime(created_at, 'localtime') AS created_at
+				FROM chat_messages
+				WHERE user_id = ?
+				ORDER BY id ASC
+				""",
+				(user_id,),
+			).fetchall()
+
+		return [self._row_to_chat_message(row) for row in rows]
+
+	def create_chat_message(self, user_id, origin, author, text):
+		with get_connection() as connection:
+			cursor = connection.cursor()
+			cursor.execute(
+				"""
+				INSERT INTO chat_messages (user_id, origin, author, text)
+				VALUES (?, ?, ?, ?)
+				""",
+				(user_id, origin, author, text),
+			)
+			connection.commit()
+
+			row = connection.execute(
+				"""
+				SELECT id, user_id, origin, author, text, datetime(created_at, 'localtime') AS created_at
+				FROM chat_messages
+				WHERE id = ?
+				""",
+				(cursor.lastrowid,),
+			).fetchone()
+
+		return self._row_to_chat_message(row)
 
 	def create_user(self, payload):
 		with get_connection() as connection:
@@ -149,10 +197,10 @@ class SQLiteService:
 		user = self.find_user_by_id(user_id)
 
 		if user is None:
-			return False, "Cliente nao encontrado."
+			return False, "Cliente não encontrado."
 
 		if user.get("admin"):
-			return False, "Usuario admin nao pode ser removido."
+			return False, "Usuário admin não pode ser removido."
 
 		with get_connection() as connection:
 			cursor = connection.cursor()

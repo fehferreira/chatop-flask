@@ -20,8 +20,8 @@ const showChatMode = (user) => {
   inputDocument.style.display = "none";
   inputEmail.style.display = "none";
   fakeSubmitButton.style.display = "none";
-  submitButton.style.display = "block";
-  messageInput.style.display = "block";
+  submitButton.style.display = "flex";
+  messageInput.style.display = "flex";
 
   initialMessage.innerHTML = `Olá <b>${user.name}</b>, como podemos te ajudar hoje?`;
 
@@ -40,6 +40,12 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   if (isAuthenticated) {
+    const message = messageInput.value.trim();
+    if (!message) {
+      return;
+    }
+
+    window.location.href = `/chat?message=${encodeURIComponent(message)}`;
     return;
   }
 
@@ -67,10 +73,10 @@ form.addEventListener("submit", async (e) => {
     inputDocument.value = "";
     inputEmail.value = "";
 
-    inputDocument.style.display = "block";
+    inputDocument.style.display = "flex";
     inputEmail.style.display = "none";
 
-    fakeSubmitButton.style.display = "block";
+    fakeSubmitButton.style.display = "flex";
     submitButton.style.display = "none";
 
     return;
@@ -84,11 +90,11 @@ fakeSubmitButton.addEventListener("click", () => {
     initialMessage.textContent = "Por favor, agora nos informe o seu e-mail.";
 
     inputDocument.style.display = "none";
-    inputEmail.style.display = "block";
+    inputEmail.style.display = "flex";
     inputEmail.focus();
 
     fakeSubmitButton.style.display = "none";
-    submitButton.style.display = "block";
+    submitButton.style.display = "flex";
   } else {
     initialMessage.textContent =
       "CPF inválido. Por favor, insira um CPF válido.";

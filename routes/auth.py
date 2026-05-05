@@ -19,7 +19,7 @@ def login():
 
     if user is None:
         return jsonify(
-            {"success": False, "message": "Credenciais invalidas. Por favor, insira o CPF novamente."}
+            {"success": False, "message": "Credenciais inválidas. Por favor, insira o CPF novamente."}
         ), 401
 
     session["user"] = user
