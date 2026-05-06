@@ -1,0 +1,133 @@
+ :root {
+  --color-text-primary: #353535;
+  --color-text-secondary: #666666;
+  --color-text-muted: #8a8a8a;
+  --color-text-inverse: #ffffff;
+  --color-surface-secondary: #f2f0ef;
+  --color-surface-muted: #e8e4e1;
+  --color-feedback-error-bg: #fff5f5;
+  --color-feedback-error-text: #e11d48;
+  --color-feedback-error-border: #fecdd3;
+  --color-feedback-success-bg: #f0fdf4;
+  --color-feedback-success-text: #166534;
+  --color-feedback-success-border: #bbf7d0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.message {
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 38rem;
+}
+
+.chat-input-area {
+  display: flex;
+  width: 100%;
+  max-width: 38rem;
+  background: var(--color-surface-secondary);
+  border-radius: 1rem;
+  font-size: 14px;
+  height: 12rem;
+  flex-direction: column;
+  padding: 16px;
+  justify-content: space-between;
+}
+
+textarea,
+input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  resize: none;
+  color: var(--color-text-primary);
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.hide {
+  display: none;
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.scroll-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: flex-start;
+}
+
+#restart-button,
+#clients-button {
+  height: 36px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: none;
+  color: var(--color-surface-secondary);
+  background: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-link {
+  text-decoration: none;
+}
+
+.submit-button {
+  height: 36px;
+  width: 36px;
+  border: none;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-left: auto;
+}

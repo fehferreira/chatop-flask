@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/css/global.css" />
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <main class="onboarding">
+      <div class="message-bubble">
+        <p class="initial-message message">
+          Olá, antes de iniciar nos informe o seu CPF.
+        </p>
+      </div>
+
+      <form class="chat-input-area">
+        <input
+          type="text"
+          id="document"
+          name="document"
+          class="chat-input"
+          placeholder="Digite seu CPF"
+          value="{{ previous_document or '' }}"
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          id="email"
+          name="email"
+          class="chat-input"
+          placeholder="Digite seu email"
+          value="{{ previous_email or '' }}"
+          autocomplete="off"
+        />
+
+        <textarea
+          id="message"
+          name="message"
+          class="chat-input"
+          placeholder="Digite sua mensagem aqui..."
+        ></textarea>
+
+        <div class="actions">
+          <a href="/clients" style="text-decoration: none">
+            <button type="button" id="restart-button">Cadastro</button>
+          </a>
+          <button type="button" id="fake-submit-button" class="submit-button">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 19V5M5 12l7-7 7 7"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <button id="submit-button" type="submit" class="submit-button">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 19V5M5 12l7-7 7 7"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </form>
+    </main>
+    <script type="module" src="../static/js/pages/index.js"></script>
+  </body>
+</html>

@@ -1,13 +1,24 @@
-// Aplicativo focado em cadastro de clientes de conta digital/cartão
+from flask import Flask
 
-// DOD
-// Ter uma página na web para consulta, cadastro, edição e deleção de clientes
-// Página no formato de ChatBot (conversa/atendimento)
-// Consulta baseado em CPF
-// Retorno de informações e opções de gerenciamento de conta
+from config.connection import init_db
+from routes import auth_bp, web_bp
 
-// Usar a biblioteca Flask para rodar na web - Será a nota da APS - Até dia 06/05
-// Usar sqlite para armazenamento de dados
 
-// Modelagem de tabela
-// 
+def create_app() -> Flask:
+	app = Flask(__name__)
+	app.config["SECRET_KEY"] = "chatop-secret-key"
+	app.json.ensure_ascii = False
+
+	init_db()
+
+	app.register_blueprint(web_bp)
+	app.register_blueprint(auth_bp)
+
+	return app
+
+
+app = create_app()
+
+
+if __name__ == "__main__":
+	app.run(debug=True)
