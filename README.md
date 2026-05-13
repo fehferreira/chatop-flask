@@ -368,6 +368,15 @@ CREATE TABLE chat_messages (
 
 ---
 
+## 👥 Integrantes
+
+- **Nome:** Felipe Ferreira da Silva
+    **RA:** 2993620
+- **Nome:** Igor Xavier de Oliveira
+    **RA:** 2352643
+
+---
+
 ## 📄 Licença
 
 Este projeto é de código aberto e pode ser usado livremente para fins educacionais.
